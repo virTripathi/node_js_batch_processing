@@ -1,0 +1,11 @@
+{
+    "all":{
+
+    },
+    "web":{
+
+    },
+    "api":[
+        "middlewares/JsonAcceptMiddleware"
+    ]
+}
