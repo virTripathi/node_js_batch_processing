@@ -27,24 +27,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const routes_1 = __importDefault(require("./routes"));
 const middlewaresConfig = __importStar(require("../middlewares/middlewares.json"));
 const path_1 = __importDefault(require("path"));
+const FileUploadRequest_1 = __importDefault(require("../requests/FileUploadRequest"));
+const FileUploadController_1 = __importDefault(require("../controllers/API/FileUploadController"));
 class ApiRouter {
     constructor() {
-        console.log('reached route constructor');
         this.router = (0, express_1.Router)();
-        this.initMiddlewares();
-        this.initRoutes();
+        console.log('Reached ApiRouter constructor');
+        this.initApiMiddlewares();
+        this.initApiRoutes();
     }
-    initRoutes() {
-        this.router.use('/', routes_1.default);
-        this.router.get('/*', (req, res) => {
-            res.status(404).json({ message: 'Not Found' });
+    initApiRoutes() {
+        this.router.get('/', (req, res) => {
+            res.json({ message: 'Hello from api routes!' });
+        });
+        this.router.post('/v1/file-upload', (req, res, next) => FileUploadRequest_1.default.handle(req, res, next), (req, res) => {
+            return FileUploadController_1.default.save(req, res);
         });
     }
-    initMiddlewares() {
-        console.log('reached route middleware');
+    initApiMiddlewares() {
         const { api } = middlewaresConfig;
         if (api && Array.isArray(api)) {
             api.forEach((middlewarePath) => {

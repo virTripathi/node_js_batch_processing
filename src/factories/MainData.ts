@@ -1,3 +1,4 @@
+import { Request } from 'express';
 export abstract class MainData {
     public limit = 20;
 

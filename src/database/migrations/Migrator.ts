@@ -1,5 +1,6 @@
 import { Migration } from './Migration';
 import { CreateUsersTable } from './CreateUsersTable';
+import { CreateFileUploadsTable } from './CreateFileUploadsTable';
 
 class Migrator {
   private migrations: Migration[];
@@ -7,6 +8,7 @@ class Migrator {
   constructor() {
     this.migrations = [
       new CreateUsersTable(),
+      new CreateFileUploadsTable()
       // Add more migration classes here as needed
     ];
   }

@@ -27,25 +27,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const apiroutes_1 = __importDefault(require("./apiroutes"));
 const middlewaresConfig = __importStar(require("../middlewares/middlewares.json"));
 const path_1 = __importDefault(require("path"));
+const ApiRouter_1 = __importDefault(require("./ApiRouter"));
 class BaseRouter {
     constructor() {
         this.router = (0, express_1.Router)();
         this.initMiddlewares();
-        this.initRoutes();
-    }
-    initRoutes() {
-        this.router.use('/', apiroutes_1.default);
-        this.router.get('/*', (req, res) => {
-            res.status(404).json({ message: 'Not Found' });
-        });
+        this.initApiRoutes(); // Corrected method call order
+        this.handleMethodNotAllowed(); // Handle method not allowed
+        this.handleNotFound(); // Handle route not found
     }
     initMiddlewares() {
-        const { api } = middlewaresConfig;
-        if (api && Array.isArray(api)) {
-            api.forEach((middlewarePath) => {
+        const { all } = middlewaresConfig;
+        if (all && Array.isArray(all)) {
+            all.forEach((middlewarePath) => {
                 const resolvedPath = path_1.default.resolve(__dirname, '..', middlewarePath);
                 const middleware = require(resolvedPath).default;
                 this.router.use((req, res, next) => {
@@ -54,5 +50,24 @@ class BaseRouter {
             });
         }
     }
+    initApiRoutes() {
+        this.router.use('/api', ApiRouter_1.default);
+    }
+    handleMethodNotAllowed() {
+        this.router.use((req, res, next) => {
+            res.setHeader('Allow', 'GET, POST'); // Define allowed methods for your route
+            if (req.method !== 'GET' && req.method !== 'POST') {
+                res.status(405).json({ message: 'Method Not Allowed', allowedMethods: ['GET', 'POST'] });
+            }
+            else {
+                next(); // Move to next middleware if method is allowed
+            }
+        });
+    }
+    handleNotFound() {
+        this.router.use('*', (req, res) => {
+            res.status(404).json({ message: 'Route Not Found!' });
+        });
+    }
 }
-exports.default = new BaseRouter().router;
+exports.default = BaseRouter;

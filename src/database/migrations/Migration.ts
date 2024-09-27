@@ -5,7 +5,7 @@ export abstract class Migration {
   protected queryInterface: QueryInterface;
 
   constructor() {
-    const database = new Database();
+    const database = Database;
     this.queryInterface = database.sequelize.getQueryInterface();
   }
 

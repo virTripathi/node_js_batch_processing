@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const CreateUsersTable_1 = require("./CreateUsersTable");
+const CreateFileUploadsTable_1 = require("./CreateFileUploadsTable");
 class Migrator {
     constructor() {
         this.migrations = [
             new CreateUsersTable_1.CreateUsersTable(),
+            new CreateFileUploadsTable_1.CreateFileUploadsTable()
             // Add more migration classes here as needed
         ];
     }

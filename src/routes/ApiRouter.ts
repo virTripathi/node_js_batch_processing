@@ -1,27 +1,34 @@
 import { Request, Response, NextFunction, Router } from 'express';
-import BaseRouter from './BaseRouter';
-import routes from './ApiRoutes';
 import * as middlewaresConfig from '../middlewares/middlewares.json';
 import path from 'path';
+import FileUploadRequest from '../requests/FileUploadRequest';
+import FileUploadController from '../controllers/API/FileUploadController';
 
-class ApiRouter extends BaseRouter {
+class ApiRouter {
+    public router: Router;
+
     constructor() {
-        super();
+        this.router = Router();
         console.log('Reached ApiRouter constructor');
         this.initApiMiddlewares();
         this.initApiRoutes();
     }
 
     private initApiRoutes(): void {
-        this.router.use('/api', routes);
-
-        this.router.use('/api/*', (req: Request, res: Response) => {
-            res.status(404).json({ message: 'Not Found' });
+        this.router.get('/', (req, res) => {
+            res.json({ message: 'Hello from api routes!' });
         });
+
+        this.router.post(
+            '/v1/file-upload',
+            (req, res, next) => FileUploadRequest.handle(req, res, next),
+            (req, res) => {
+                return FileUploadController.save(req,res);
+            }
+        );
     }
 
     private initApiMiddlewares(): void {
-        console.log('Reached ApiRouter middleware initialization');
         const { api } = middlewaresConfig;
         if (api && Array.isArray(api)) {
             api.forEach((middlewarePath: string) => {

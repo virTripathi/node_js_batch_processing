@@ -8,7 +8,7 @@ const sequelize_1 = require("sequelize");
 const database_1 = __importDefault(require("../database"));
 class Migration {
     constructor() {
-        const database = new database_1.default();
+        const database = database_1.default;
         this.queryInterface = database.sequelize.getQueryInterface();
     }
     async createTable(tableName, columns) {

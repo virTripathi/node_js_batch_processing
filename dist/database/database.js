@@ -59,4 +59,4 @@ class Database {
         return this.sequelize;
     }
 }
-exports.default = Database;
+exports.default = new Database();
