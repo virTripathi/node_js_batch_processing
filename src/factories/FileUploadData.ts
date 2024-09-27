@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs/promises';
 import path from 'path';
 import FileUpload from "../database/models/FileUpload";
+import {Queues} from "../Queues/queues";
 
 export class FileUploadData extends MainData {
 
@@ -18,7 +19,6 @@ export class FileUploadData extends MainData {
     }
 
     public async store(request: Request): Promise<number> {
-
         if (!request.file) {
           throw new Error('No file uploaded');
         }
@@ -39,7 +39,15 @@ export class FileUploadData extends MainData {
         });
         
         await fileUpload.save();
-    
+        console.log('adding queue');
+        var SendEmailQueue = new Queues().SendEmailQueue.add({email:'A',data:[1,2,3]})
+        .then(()=> {
+          console.log('added queue');
+        })
+        .catch((e)=> {
+          console.log(e);
+        })
+        ;
         return fileUpload.id;
         } catch (err:any) {
             console.error('Failed to store file:', err);
