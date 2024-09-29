@@ -5,12 +5,10 @@ class QueueRegister {
     private queues: { [key: string]: Queue };
 
     constructor() {
-        console.log('Register class instantiated');
         this.queues = {};
     }
 
     public createQueue(name: string) {
-        console.log('creating queue');
         const queue = new Bull(name, {
             redis: {
                 host: REDIS_URI,
@@ -27,9 +25,7 @@ class QueueRegister {
                 console.error(`Failed to import Job class ${jobClassName}:`, error);
                 return;
             }
-            console.log('processing queue');
             if (JobClass.default && typeof JobClass.default.process === 'function') {
-                console.log('job found');
                 await JobClass.default.process(job);
             } else {
                 console.error(`Job class ${jobClassName} does not have a valid process method.`);

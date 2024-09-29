@@ -22,7 +22,7 @@ class FileUploadRequest {
                 return res.status(400).json({ message: 'No file uploaded' });
             }
 
-            const requiredHeaders = ['s no', 'product name', 'input image urls'];
+            const requiredHeaders = ['id', 'to', 'Subject', 'Body'];
             const fileContent = req.file.buffer.toString();
             const stream = Readable.from(fileContent);
             const rows: any[] = [];
@@ -40,32 +40,32 @@ class FileUploadRequest {
                         return res.status(400).json({ message: 'Invalid CSV headers' });
                     }
 
-                    const validationErrors: string[] = [];
-                    for (const [index, row] of rows.entries()) {
-                        const rowIndex = index + 1;
-                        if (!row['s no'] || isNaN(Number(row['s no']))) {
-                            validationErrors.push(`Row ${rowIndex}: 's no' must be a number`);
-                        }
-                        if (!row['product name'] || typeof row['product name'] !== 'string') {
-                            validationErrors.push(`Row ${rowIndex}: 'product name' must be a string`);
-                        }
-                        if (!row['input image urls'] || typeof row['input image urls'] !== 'string' || !validator.isURL(row['input image urls'])) {
-                            validationErrors.push(`Row ${rowIndex}: 'input image urls' must be a valid URL`);
-                        } else {
-                            try {
-                                const response = await axios.head(row['input image urls']);
-                                if (!response.headers['content-type'].startsWith('image/')) {
-                                    validationErrors.push(`Row ${rowIndex}: 'input image urls' must be a valid image URL`);
-                                }
-                            } catch (error) {
-                                validationErrors.push(`Row ${rowIndex}: 'input image urls' is not reachable or not an image`);
-                            }
-                        }
-                    }
+                    // const validationErrors: string[] = [];
+                    // for (const [index, row] of rows.entries()) {
+                    //     const rowIndex = index + 1;
+                    //     if (!row['s no'] || isNaN(Number(row['s no']))) {
+                    //         validationErrors.push(`Row ${rowIndex}: 's no' must be a number`);
+                    //     }
+                    //     if (!row['product name'] || typeof row['product name'] !== 'string') {
+                    //         validationErrors.push(`Row ${rowIndex}: 'product name' must be a string`);
+                    //     }
+                    //     if (!row['input image urls'] || typeof row['input image urls'] !== 'string' || !validator.isURL(row['input image urls'])) {
+                    //         validationErrors.push(`Row ${rowIndex}: 'input image urls' must be a valid URL`);
+                    //     } else {
+                    //         try {
+                    //             const response = await axios.head(row['input image urls']);
+                    //             if (!response.headers['content-type'].startsWith('image/')) {
+                    //                 validationErrors.push(`Row ${rowIndex}: 'input image urls' must be a valid image URL`);
+                    //             }
+                    //         } catch (error) {
+                    //             validationErrors.push(`Row ${rowIndex}: 'input image urls' is not reachable or not an image`);
+                    //         }
+                    //     }
+                    // }
 
-                    if (validationErrors.length > 0) {
-                        return res.status(400).json({ message: 'CSV content validation failed', errors: validationErrors });
-                    }
+                    // if (validationErrors.length > 0) {
+                    //     return res.status(400).json({ message: 'CSV content validation failed', errors: validationErrors });
+                    // }
 
                     // Call next middleware if everything is fine
                     next();

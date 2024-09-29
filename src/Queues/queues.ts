@@ -4,4 +4,5 @@ import QueueRegister from './QueueRegister';
 
 export class Queues {
     public SendEmailQueue = new QueueRegister().createQueue('SendEmailQueue');
+    public ProcessCsvQueue = new QueueRegister().createQueue('ProcessCsvQueue');
 }

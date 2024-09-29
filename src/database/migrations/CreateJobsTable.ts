@@ -10,19 +10,30 @@ export class CreateJobsTable extends Migration {
         allowNull: false,
         primaryKey: true,
       },
-      username: {
+      queue: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      email: {
-        type: DataTypes.STRING,
+      payload: {
+        type: DataTypes.TEXT,
         allowNull: false,
-        unique: true,
+      },
+      attempts: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      reserved_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      available_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
       },
     });
   }
 
   public async down(): Promise<void> {
-    await this.dropTable('Users');
+    await this.dropTable('jobs');
   }
 }

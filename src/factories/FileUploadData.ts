@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import FileUpload from "../database/models/FileUpload";
 import {Queues} from "../Queues/queues";
+import JobBatch from "../database/models/JobBatch";
 
 export class FileUploadData extends MainData {
 
@@ -39,15 +40,19 @@ export class FileUploadData extends MainData {
         });
         
         await fileUpload.save();
+        const jobBatch = new JobBatch({
+          name:'CSV_Upload_'+uuidv4(),
+          total_jobs: 0,
+          pending_jobs:0,
+          failed_jobs:0
+        });
+        await jobBatch.save();
         console.log('adding queue');
-        var SendEmailQueue = new Queues().SendEmailQueue.add({email:'A',data:[1,2,3]})
-        .then(()=> {
-          console.log('added queue');
-        })
+        new Queues().ProcessCsvQueue.add({fileName:newFilePath, batchId:jobBatch.id})
+        .then(()=> {})
         .catch((e)=> {
           console.log(e);
-        })
-        ;
+        });
         return fileUpload.id;
         } catch (err:any) {
             console.error('Failed to store file:', err);
