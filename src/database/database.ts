@@ -7,12 +7,9 @@ class Database {
   public sequelize: Sequelize;
 
   constructor() {
-    this.sequelize = new Sequelize({
+    this.sequelize = new Sequelize(config.database, config.username, config.password,{
       host: config.host,
       port: config.port,
-      username: config.username,
-      password: config.password,
-      database: config.database,
       dialect: config.dialect
     });
   }
