@@ -20,7 +20,6 @@ class QueueRegister {
         this.queues[name] = queue;
         queue.process(async (job) => {
             const jobClassName = name.replace('Queue', 'Job');
-            console.log(jobClassName);
             let JobClass;
             try {
                 JobClass = await import(`../Jobs/${jobClassName}`);

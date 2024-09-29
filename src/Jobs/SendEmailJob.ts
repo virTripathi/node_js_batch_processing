@@ -1,12 +1,11 @@
 import { BaseJob } from "./BaseJob";
 import { Job, DoneCallback } from "bull";
-import Mailer from '../Mail/Mailer';
+import WelcomeMail from "../Mail/WelcomeMail";
 
 class SendEmailJob extends BaseJob {
     public async process(job: Job, done: DoneCallback) {
         const { email, data } = job.data;
-        console.log('Sending email to:', email, 'with data:', data);
-        Mailer;
+        const mail = new WelcomeMail({ name: "John Doe" }).send('abc@bcd.com');
         done();
     }
 }
