@@ -12,7 +12,6 @@ class ProcessCsvJob extends BaseJob {
         const batchId = job.data.batchId;
         const batch = await JobBatch.findById(batchId);
         if (!batch) {
-            console.log('batch not found');
             return;
         }
         try {
@@ -28,15 +27,16 @@ class ProcessCsvJob extends BaseJob {
 
         stream.on('data', async (data) => {
             csvData.push(data);
-            if (csvData.length === 1000) {
-                await this.createJobAndBatches(batch, csvData);
+            if (csvData.length === 100) {
+                await this.createJobsUpdateBatch(batch, csvData);
                 csvData.length = 0;
             }
         });
 
         stream.on('end', async () => {
             if (csvData.length > 0) {
-                await this.createJobAndBatches(batch, csvData);
+                await this.createJobsUpdateBatch(batch, csvData);
+                csvData.length = 0;
             }
         });
 
@@ -45,27 +45,26 @@ class ProcessCsvJob extends BaseJob {
         });
     }
 
-    private async createJobAndBatches(batch: JobBatch, csvData: Array<any>) {
+    private async createJobsUpdateBatch(batch: JobBatch, csvData: Array<any>) {
         const job = new Job({
             queue: '',
             payload: JSON.stringify(csvData),
             attempts: 0,
         });
         var failed_job_ids = [];
-
-        await job.save();
-        batch.total_jobs += csvData.length;
-        batch.pending_jobs += csvData.length;
-
         try {
-            await new Queues().SendEmailQueue.add({ data: csvData, batch: batch });
+            await job.save();
+            batch.total_jobs += 1;
+            batch.pending_jobs += 1;
+            await batch.save();
+            await new Queues().SendEmailQueue.add({ data: csvData, batchId: batch.id });
             job.reserved_at = new Date();
             await job.save();
-            batch.pending_jobs -= csvData.length;
         } catch (error) {
             job.attempts += 1;
             await job.save();
             batch.failed_jobs += 1;
+            batch.save();
             failed_job_ids.push(job.id);
         } finally {
             batch.failed_job_ids = JSON.parse(JSON.stringify(failed_job_ids));

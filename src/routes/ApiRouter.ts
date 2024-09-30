@@ -9,7 +9,6 @@ class ApiRouter {
 
     constructor() {
         this.router = Router();
-        console.log('Reached ApiRouter constructor');
         this.initApiMiddlewares();
         this.initApiRoutes();
     }

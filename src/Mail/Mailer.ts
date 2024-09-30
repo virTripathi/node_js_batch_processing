@@ -25,7 +25,6 @@ class Mailer {
         text: this.getTextContent(),
         html: this.getHtmlContent(),
       });
-      console.log("Message sent: %s", info.messageId);
     }
 
     protected getSubject(): string {

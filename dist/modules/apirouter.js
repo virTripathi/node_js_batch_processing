@@ -32,7 +32,6 @@ const middlewaresConfig = __importStar(require("../middlewares/middlewares.json"
 const path_1 = __importDefault(require("path"));
 class ApiRouter {
     constructor() {
-        console.log('reached route constructor');
         this.router = (0, express_1.Router)();
         this.initMiddlewares();
         this.initRoutes();
@@ -44,7 +43,6 @@ class ApiRouter {
         });
     }
     initMiddlewares() {
-        console.log('reached route middleware');
         const { api } = middlewaresConfig;
         if (api && Array.isArray(api)) {
             api.forEach((middlewarePath) => {

@@ -34,7 +34,6 @@ const FileUploadController_1 = __importDefault(require("../controllers/API/FileU
 class ApiRouter {
     constructor() {
         this.router = (0, express_1.Router)();
-        console.log('Reached ApiRouter constructor');
         this.initApiMiddlewares();
         this.initApiRoutes();
     }

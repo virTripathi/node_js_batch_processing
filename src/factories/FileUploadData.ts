@@ -47,7 +47,6 @@ export class FileUploadData extends MainData {
           failed_jobs:0
         });
         await jobBatch.save();
-        console.log('adding queue');
         new Queues().ProcessCsvQueue.add({fileName:newFilePath, batchId:jobBatch.id})
         .then(()=> {})
         .catch((e)=> {

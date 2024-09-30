@@ -5,7 +5,6 @@ class WelcomeMail extends Mailer {
     constructor(data: any) {
       super();
       this.data = data;
-      console.log(data);
     }
   
     protected getSubject(): string {
